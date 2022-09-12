@@ -26,6 +26,8 @@
     "helmet": "^5.1.1",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
+    "linkify-plugin-hashtag": "^3.0.4",
+    "linkifyjs": "^3.0.5",
     "mongoose": "^6.5.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",

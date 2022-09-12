@@ -1,5 +1,7 @@
 import cloudinary from "cloudinary";
-import "dotenv/config";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
   process.env;
@@ -10,4 +12,23 @@ cloudinary.config({
   api_secret: CLOUDINARY_API_SECRET,
 });
 
-export default cloudinary;
+const cloudUpload = cloudinary.v2;
+
+const cloud = {
+  uploadToCloud(req, res, next) {
+    const { path } = req.file;
+    cloudUpload.uploader
+      .upload(path, {
+        folder: "posts",
+        width: 150,
+        height: 150,
+        crop: "pad",
+      })
+      .then((image) => {
+        req.image = image;
+        return next();
+      });
+  },
+};
+
+export default cloud;

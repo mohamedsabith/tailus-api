@@ -1,15 +1,41 @@
 /* eslint-disable import/extensions */
 import mongoose from "mongoose";
+import * as linkify from "linkifyjs";
+import "linkify-plugin-hashtag";
 import PostModel from "../models/postModel.js";
 import UserModel from "../models/userModel.js";
 
 // creating a post
 
 export const createPost = async (req, res) => {
-  const newPost = new PostModel(req.body);
+  const { userId, caption } = req.body;
   try {
-    await newPost.save();
-    return res.status(200).json(newPost);
+    if (!req.image) {
+      return res
+        .status(400)
+        .send({ error: "Please provide the image to upload." });
+    }
+    const hashtags = [];
+    linkify.find(caption).forEach((result) => {
+      if (result.type === "hashtag") {
+        hashtags.push(result.value.substring(1));
+      }
+    });
+    // saving to DB
+    const newPost = new PostModel({
+      userId: userId,
+      caption: caption,
+      hashtags,
+      image: req.image.secure_url,
+    });
+
+    await newPost.save(async (err) => {
+      if (err) {
+        console.log(err.message);
+        return res.status(400).json({ status: false, error: err.message });
+      }
+      return res.status(200).json(newPost);
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
