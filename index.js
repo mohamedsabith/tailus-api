@@ -14,7 +14,13 @@ import compression from "compression";
 import mongoose from "mongoose";
 import "dotenv/config";
 import errorHandler from "./middlewares/errorMiddleware.js";
-import authRoutes from "./routes/authRoutes.js";
+
+// Routes
+import authRoute from "./routes/authRoute.js";
+import UserRoute from "./routes/userRoute.js";
+import PostRoute from "./routes/postRoute.js";
+import ChatRoute from "./routes/chatRoute.js";
+import MessageRoute from "./routes/messageRoute.js";
 
 const app = express();
 
@@ -47,7 +53,11 @@ const accessLogStream = fs.createWriteStream(
 app.use(logger("combined", { stream: accessLogStream }));
 app.use(errorHandler);
 app.get("/", (req, res) => res.send("TAILUS API IS WORKING"));
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/user", UserRoute);
+app.use("/api/v1/post", PostRoute);
+app.use("/api/v1/chat", ChatRoute);
+app.use("/api/v1/message", MessageRoute);
 
 app.all("*", (req, res) => {
   res.status(404).json({
@@ -56,7 +66,7 @@ app.all("*", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const { PORT } = process.env;
 const { CONNECTION_URL } = process.env;
 
 mongoose

@@ -53,6 +53,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       maxlength: 65,
     },
+    followers: [],
+    following: [],
     private: {
       type: Boolean,
       default: false,
