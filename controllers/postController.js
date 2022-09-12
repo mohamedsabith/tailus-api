@@ -48,6 +48,11 @@ export const getPost = async (req, res) => {
 
   try {
     const post = await PostModel.findById(id);
+    if (!post) {
+      return res
+        .status(404)
+        .json({ message: "Post cannot be found, please verify." });
+    }
     return res.status(200).json(post);
   } catch (error) {
     return res.status(500).json(error);
