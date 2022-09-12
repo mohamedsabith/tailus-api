@@ -1,0 +1,8 @@
+node_modules
+access.log
+# environment variables
+.env
+# Optional eslint cache
+.eslintcache
+# Optional npm cache directory
+.npm
