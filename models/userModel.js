@@ -53,7 +53,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       maxlength: 65,
     },
-    followers: [],
+    followers: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+        },
+      },
+    ],
     following: [],
     private: {
       type: Boolean,

@@ -29,12 +29,12 @@ export const createPost = async (req, res) => {
       image: req.image.secure_url,
     });
 
-    await newPost.save(async (err) => {
+    await newPost.save(async (err, response) => {
       if (err) {
         console.log(err.message);
         return res.status(400).json({ status: false, error: err.message });
       }
-      return res.status(200).json(newPost);
+      return res.status(200).json(response);
     });
   } catch (error) {
     return res.status(500).json(error);
@@ -42,7 +42,6 @@ export const createPost = async (req, res) => {
 };
 
 // get a post
-
 export const getPost = async (req, res) => {
   const { id } = req.params;
 
