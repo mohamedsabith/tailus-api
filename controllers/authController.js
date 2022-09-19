@@ -130,6 +130,7 @@ const googleSignUp = async (req, res) => {
         status: true,
         message: "Register Successfully",
         token,
+        id: result.id,
         userDetails,
       });
     });
@@ -160,7 +161,7 @@ const otpVerification = (req, res) => {
             fullname: fullname,
             password: hashedPassword,
           });
-          await newUser.save(async (err, result) => {
+          newUser.save(async (err, result) => {
             if (err) {
               console.log(err.message);
               return res
@@ -191,6 +192,7 @@ const otpVerification = (req, res) => {
               status: true,
               message: "Register Successfully",
               token,
+              id: result.id,
               userDetails,
             });
           });
