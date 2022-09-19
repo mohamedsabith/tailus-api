@@ -2,6 +2,7 @@
 import express from "express";
 import responseTime from "response-time";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
 import { rateLimit } from "express-rate-limit";
@@ -35,6 +36,7 @@ const limiter = rateLimit({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(cookieParser());
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
