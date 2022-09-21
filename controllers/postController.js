@@ -30,12 +30,14 @@ export const createPost = async (req, res) => {
       image: req.image.secure_url,
     });
 
-    await newPost.save(async (err, response) => {
+    await newPost.save(async (err) => {
       if (err) {
         console.log(err.message);
         return res.status(400).json({ status: false, error: err.message });
       }
-      return res.status(200).json(response);
+      return res
+        .status(200)
+        .json({ message: "Post Created Successfully", status: true });
     });
   } catch (error) {
     return res.status(500).json(error);
