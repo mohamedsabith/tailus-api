@@ -11,6 +11,7 @@ import {
   forgotPasswordValidation,
   resetPasswordValidation,
 } from "../validators/authValidator.js";
+import { Encrypt } from "../utils/crypto.js";
 import userModel from "../models/userModel.js";
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -119,17 +120,19 @@ const googleSignUp = async (req, res) => {
         process.env.ACCESS_JWT_TOKEN,
         { expiresIn: "1d" }
       );
-      console.log(chalk.green("Register Successfully"));
+      const encryptToken = await Encrypt(token);
+
       const userDetails = {
         email,
         generatingUsername,
         fullname,
         password,
       };
+      console.log(chalk.green("Register Successfully"));
       return res.status(200).json({
         status: true,
         message: "Register Successfully",
-        token,
+        encryptToken,
         id: result.id,
         userDetails,
       });
@@ -180,7 +183,7 @@ const otpVerification = (req, res) => {
               process.env.ACCESS_JWT_TOKEN,
               { expiresIn: "1d" }
             );
-            console.log(chalk.green("Register Successfully"));
+            const encryptToken = await Encrypt(token);
             const userDetails = {
               phoneNumber,
               email,
@@ -188,10 +191,11 @@ const otpVerification = (req, res) => {
               fullname,
               password,
             };
+            console.log(chalk.green("Register Successfully"));
             return res.status(200).json({
               status: true,
               message: "Register Successfully",
-              token,
+              encryptToken,
               id: result.id,
               userDetails,
             });
@@ -250,11 +254,12 @@ const signIn = async (req, res) => {
         process.env.ACCESS_JWT_TOKEN,
         { expiresIn: "1d" }
       );
-
+      const encryptToken = await Encrypt(token);
+      console.log(chalk.green("Login Successfully"));
       return res.status(200).json({
         status: "ok",
         msg: "Sign in Success",
-        token,
+        encryptToken,
         id: user._id,
         name: user.name,
         email: user.email,

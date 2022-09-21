@@ -16,7 +16,6 @@ const cloudUpload = cloudinary.v2;
 
 const cloud = {
   uploadToCloud(req, res, next) {
-    console.log(req.file);
     const { path } = req.file;
     cloudUpload.uploader
       .upload(path, {

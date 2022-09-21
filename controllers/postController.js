@@ -8,14 +8,15 @@ import UserModel from "../models/userModel.js";
 // creating a post
 
 export const createPost = async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
   const { userId, caption } = req.body;
   try {
     if (!req.image) {
       return res
         .status(400)
         .send({ error: "Please provide the image to upload." });
+    }
+    if (!userId) {
+      return res.status(400).send({ error: "Please provide userId." });
     }
     const hashtags = [];
     linkify.find(caption).forEach((result) => {

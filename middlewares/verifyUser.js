@@ -1,6 +1,8 @@
+/* eslint-disable import/extensions */
 import jwt from "jsonwebtoken";
+import { Decrypt } from "../utils/crypto.js";
 
-const verifyLogin = (req, res, next) => {
+const verifyLogin = async (req, res, next) => {
   const token = req.header("authtoken");
 
   if (!token) {
@@ -8,7 +10,8 @@ const verifyLogin = (req, res, next) => {
   }
 
   try {
-    const verify = jwt.verify(token, process.env.ACCESS_JWT_TOKEN);
+    const decryptToken = await Decrypt(token);
+    const verify = jwt.verify(decryptToken, process.env.ACCESS_JWT_TOKEN);
     req.user = verify;
     next();
   } catch (error) {
