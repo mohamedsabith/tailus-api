@@ -8,8 +8,8 @@ import UserModel from "../models/userModel.js";
 // creating a post
 
 export const createPost = async (req, res) => {
-  console.log(req.body);
-  const { userId, caption } = req.body;
+  console.log(req.file);
+  const { userId, caption } = req.file;
   try {
     if (!req.image) {
       return res
