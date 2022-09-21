@@ -9,18 +9,12 @@ import {
   updatePost,
 } from "../controllers/postController.js";
 import cloudUpload from "../utils/cloudinary.js";
-import Upload from "../services/multer.js";
+// import Upload from "../services/multer.js";
 import verifyUser from "../middlewares/verifyUser.js";
 
 const router = express.Router();
 
-router.post(
-  "/",
-  verifyUser,
-  Upload.single("image"),
-  cloudUpload.uploadToCloud,
-  createPost
-);
+router.post("/", verifyUser, cloudUpload.uploadToCloud, createPost);
 router.get("/:id", verifyUser, getPost);
 router.put("/:id", verifyUser, updatePost);
 router.delete("/:id", verifyUser, deletePost);
