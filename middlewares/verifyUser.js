@@ -8,7 +8,7 @@ const verifyLogin = (req, res, next) => {
   }
 
   try {
-    const verify = jwt.verify(token, process.env.SIGNIN_TOKEN_KEY_JWT);
+    const verify = jwt.verify(token, process.env.ACCESS_JWT_TOKEN);
     req.user = verify;
     next();
   } catch (error) {
