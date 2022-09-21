@@ -24,7 +24,7 @@ export const createPost = async (req, res) => {
     });
     // saving to DB
     const newPost = new PostModel({
-      userId: userId,
+      userId: mongoose.Types.ObjectId(userId),
       caption: caption,
       hashtags,
       image: req.image.secure_url,
