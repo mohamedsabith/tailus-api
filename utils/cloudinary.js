@@ -20,8 +20,8 @@ const cloud = {
     cloudUpload.uploader
       .upload(path, {
         folder: "posts",
-        width: 150,
-        height: 150,
+        width: 1080,
+        height: 1080,
         crop: "pad",
       })
       .then((image) => {
