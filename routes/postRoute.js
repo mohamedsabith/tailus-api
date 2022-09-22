@@ -25,6 +25,6 @@ router.get("/:id", verifyUser, getPost);
 router.put("/:id", verifyUser, updatePost);
 router.delete("/:id", verifyUser, deletePost);
 router.put("/:id/like", verifyUser, likePost);
-router.get("/:id/timeline", verifyUser, getTimelinePosts);
+router.get("/timeline/:id", verifyUser, getTimelinePosts);
 
 export default router;
