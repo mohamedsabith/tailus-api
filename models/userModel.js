@@ -5,11 +5,11 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
-      unique: true,
       trim: true,
       lowercase: true,
-      minlength: 3,
+      required: [true, "Please enter username"],
+      minlength: [3, "Username must be of minimum 3 characters"],
+      unique: [true, "Username already exists"],
     },
     fullname: {
       type: String,
@@ -17,9 +17,9 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      unique: true,
+      required: [true, "Please enter email"],
+      unique: [true, "Email already exists"],
       trim: true,
-      required: true,
       validate: (value) => {
         if (!validator.isEmail(value)) {
           throw new Error("Invalid email address.");
@@ -34,8 +34,8 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
-      minlength: 8,
+      required: [true, "Please enter password"],
+      minlength: [8, "Password must be of minimum 8 characters"],
     },
     avatar: {
       type: String,
@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema(
     },
     bio: {
       type: String,
+      default: "Hi👋 Welcome To My Profile",
       maxlength: 130,
     },
     website: {
@@ -55,12 +56,28 @@ const userSchema = new mongoose.Schema(
     },
     followers: [
       {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
       },
     ],
-    following: [],
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
+    saved: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     private: {
       type: Boolean,
       default: false,

@@ -4,15 +4,13 @@ import {
   followUser,
   getAllUsers,
   getUser,
-  unfollowUser,
 } from "../controllers/userController.js";
 import verifyUser from "../middlewares/verifyUser.js";
 
 const router = express.Router();
 
 router.get("/:id", getUser);
-router.get("/", getAllUsers);
-router.put("/:id/follow", verifyUser, followUser);
-router.put("/:id/unfollow", verifyUser, unfollowUser);
+router.get("/", verifyUser, getAllUsers);
+router.put("/follow/:id", verifyUser, followUser);
 
 export default router;

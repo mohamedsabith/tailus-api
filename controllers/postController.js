@@ -6,7 +6,6 @@ import PostModel from "../models/postModel.js";
 import UserModel from "../models/userModel.js";
 
 // creating a post
-
 export const createPost = async (req, res) => {
   const { userId, caption } = req.body;
   try {
@@ -63,23 +62,6 @@ export const getPost = async (req, res) => {
   }
 };
 
-// update post
-export const updatePost = async (req, res) => {
-  const postId = req.params.id;
-  const { userId } = req.body;
-
-  try {
-    const post = await PostModel.findById(postId);
-    if (post.userId === userId) {
-      await post.updateOne({ $set: req.body });
-      return res.status(200).json("Post updated!");
-    }
-    return res.status(403).json("Authentication failed");
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
-
 // delete a post
 export const deletePost = async (req, res) => {
   const { id } = req.params;
@@ -87,6 +69,11 @@ export const deletePost = async (req, res) => {
 
   try {
     const post = await PostModel.findById(id);
+    if (!post) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Post Not Found." });
+    }
     if (post.userId === userId) {
       await post.deleteOne();
       return res.status(200).json("Post deleted.");
@@ -103,6 +90,11 @@ export const likePost = async (req, res) => {
   const { userId } = req.body;
   try {
     const post = await PostModel.findById(id);
+    if (!post) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Post Not Found." });
+    }
     if (post.likes.includes(userId)) {
       await post.updateOne({ $pull: { likes: userId } });
       return res.status(200).json("Post disliked");
@@ -140,15 +132,11 @@ export const getTimelinePosts = async (req, res) => {
           _id: 0,
         },
       },
-    ]);
+    ]).sort({ createdAt: -1 });
 
     return res
       .status(200)
-      .json(
-        currentUserPosts
-          .concat(...followingPosts[0].followingPosts)
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      );
+      .json(currentUserPosts.concat(...followingPosts[0].followingPosts));
   } catch (error) {
     return res.status(500).json(error);
   }

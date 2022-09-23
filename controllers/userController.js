@@ -1,4 +1,5 @@
 /* eslint-disable import/extensions */
+import chalk from "chalk";
 import UserModel from "../models/userModel.js";
 
 // Get a User
@@ -32,48 +33,42 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// Follow a User
+// Follow | Unfollow User
 export const followUser = async (req, res) => {
-  const { id } = req.params;
-  const { _id } = req.body;
-  if (_id === id) {
-    return res.status(403).json("Action Forbidden");
-  }
   try {
-    const FollowUser = await UserModel.findById(id);
-    const followingUser = await UserModel.findById(_id);
+    const userToFollow = await UserModel.findById(req.params.id);
+    const loggedInUser = await UserModel.findById(req.body.userId);
 
-    if (!followUser.followers.includes(_id)) {
-      await FollowUser.updateOne({ $push: { followers: _id } });
-      await followingUser.updateOne({ $push: { following: id } });
-      return res.status(200).json("User followed!");
+    if (!userToFollow) {
+      return res.status(400).json({ status: false, message: "User not found" });
     }
-    return res.status(403).json("you are already following this id");
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(error);
-  }
-};
 
-// Unfollow a User
-export const unfollowUser = async (req, res) => {
-  const { id } = req.params;
-  const { _id } = req.body;
+    if (loggedInUser.following.includes(userToFollow._id)) {
+      const followingIndex = loggedInUser.following.indexOf(userToFollow._id);
+      const followerIndex = userToFollow.followers.indexOf(loggedInUser._id);
 
-  if (_id === id) {
-    return res.status(403).json("Action Forbidden");
-  }
-  try {
-    const unFollowUser = await UserModel.findById(id);
-    const unFollowingUser = await UserModel.findById(_id);
+      loggedInUser.following.splice(followingIndex, 1);
+      userToFollow.followers.splice(followerIndex, 1);
 
-    if (unFollowUser.followers.includes(_id)) {
-      await unFollowUser.updateOne({ $pull: { followers: _id } });
-      await unFollowingUser.updateOne({ $pull: { following: id } });
-      return res.status(200).json("Unfollowed Successfully!");
+      await loggedInUser.save();
+      await userToFollow.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "User Unfollowed",
+      });
     }
-    return res.status(403).json("You are not following this User");
+    loggedInUser.following.push(userToFollow._id);
+    userToFollow.followers.push(loggedInUser._id);
+    await loggedInUser.save();
+    await userToFollow.save();
+
+    res.status(200).json({
+      success: true,
+      message: "User Followed",
+    });
   } catch (error) {
-    return res.status(500).json(error);
+    console.log(chalk.red(error));
+    return res.status(404).json(error);
   }
 };

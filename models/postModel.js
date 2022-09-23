@@ -7,19 +7,43 @@ const postSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
+    image: String,
     caption: String,
-    likes: [],
     hashtags: [
       {
         type: String,
         lowercase: true,
       },
     ],
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    comments: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        comment: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+      },
+    ],
+    savedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     createdAt: {
       type: Date,
       default: new Date(),
     },
-    image: String,
   },
   {
     timestamps: true,

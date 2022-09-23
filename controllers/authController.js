@@ -34,24 +34,30 @@ const signUp = async (req, res) => {
     const { username, email, phoneNumber } = req.body;
     // checking user already exist
     const user = await userModel.findOne({
-      $or: [{ email }, { phoneNumber }],
+      $or: [{ email }, { phoneNumber }, { username: username }],
     });
 
     if (user) {
+      // checking username already exist
+      if (user.username === username) {
+        return res
+          .status(400)
+          .json({ status: false, error: "Username already taken." });
+      }
+      // checking email already exist
+      if (user.email === email) {
+        return res.status(400).json({
+          status: false,
+          error: "Another account is using this email.",
+        });
+      }
+      // checking number already exist
       return res.status(400).json({
         status: false,
-        error: "Another account is using this email or number.",
+        error: "Another account is using this number.",
       });
     }
 
-    // checking username already exist
-    const usernameExist = await userModel.findOne({ username: username });
-
-    if (usernameExist) {
-      return res
-        .status(400)
-        .json({ status: false, error: "Username already taken." });
-    }
     // Send Otp
     try {
       client.verify.v2
