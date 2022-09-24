@@ -47,7 +47,7 @@ const postSchema = mongoose.Schema(
     },
   },
   {
-    timestamps: true,
+    timestamp: { type: Date, default: new Date(moment.utc(Date.now())) },
   }
 );
 
