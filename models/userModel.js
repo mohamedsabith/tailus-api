@@ -29,7 +29,6 @@ const userSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: Number,
-      unique: true,
       trim: true,
       default: "",
     },
