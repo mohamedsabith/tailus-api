@@ -337,7 +337,7 @@ const ForgotPassword = async (req, res) => {
         console.log(chalk.green(`Email successfully sent ${req.body.email}`));
         return res.status(200).json({
           status: "ok",
-          error: "Check your email for a link to reset your password",
+          message: "Check your email for a link to reset your password",
           token,
         });
       });
