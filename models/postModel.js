@@ -42,8 +42,8 @@ const postSchema = mongoose.Schema(
       },
     ],
     createdAt: {
-      type: Date,
-      default: moment(new Date).format("YYYY-MM-DD h:mma"),
+      type: String,
+      default: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
     },
   },
   {
