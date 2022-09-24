@@ -43,7 +43,7 @@ const postSchema = mongoose.Schema(
     ],
     createdAt: {
       type: Date,
-      default: moment(new Date.now()).format("YYYY-MM-DD h:mma"),
+      default: moment(new Date).format("YYYY-MM-DD h:mma"),
     },
   },
   {
