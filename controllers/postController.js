@@ -132,7 +132,7 @@ export const getTimelinePosts = async (req, res) => {
           _id: 0,
         },
       },
-    ]).sort({ createdAt: -1 });
+    ]).sort({ createdAt: 1 });
 
     return res
       .status(200)
