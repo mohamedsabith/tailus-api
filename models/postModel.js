@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import moment from "moment";
 
 const postSchema = mongoose.Schema(
   {
@@ -43,7 +42,7 @@ const postSchema = mongoose.Schema(
     ],
     createdAt: {
       type: String,
-      default: moment(new Date()).format("YYYY-MM-DD hh:mm:ss"),
+      required: true,
     },
   },
   {

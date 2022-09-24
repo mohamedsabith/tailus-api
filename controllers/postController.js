@@ -2,9 +2,9 @@
 import mongoose from "mongoose";
 import * as linkify from "linkifyjs";
 import "linkify-plugin-hashtag";
+import moment from "moment";
 import PostModel from "../models/postModel.js";
 import UserModel from "../models/userModel.js";
-
 // creating a post
 export const createPost = async (req, res) => {
   const { userId, caption } = req.body;
@@ -29,6 +29,7 @@ export const createPost = async (req, res) => {
       caption: caption,
       hashtags,
       image: req.image.secure_url,
+      createdAt: moment(new Date()).format("MM Do YYYY, h:mm:ss a"),
     });
 
     await newPost.save(async (err) => {
