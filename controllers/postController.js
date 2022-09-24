@@ -126,14 +126,13 @@ export const getTimelinePosts = async (req, res) => {
           as: "followingPosts",
         },
       },
-      { $sort: { createdAt: -1 } },
       {
         $project: {
           followingPosts: 1,
           _id: 0,
         },
-      }
-    ])
+      },
+    ]);
 
     return res
       .status(200)
