@@ -1,3 +1,3 @@
 import moment from "moment"
 
-console.log();
+console.log(moment(new Date).format('lll'));
