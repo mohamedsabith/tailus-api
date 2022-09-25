@@ -46,8 +46,8 @@ const postSchema = mongoose.Schema(
       },
     ],
     createdAt: {
-      type: String,
-      default: moment(new Date()).utcOffset("+05:30").format("lll"),
+      type: Date,
+      default: moment(Date.now()).utcOffset("+05:30").format("lll"),
     },
   },
   {
