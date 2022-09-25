@@ -4,6 +4,7 @@ import * as linkify from "linkifyjs";
 import "linkify-plugin-hashtag";
 import PostModel from "../models/postModel.js";
 import UserModel from "../models/userModel.js";
+import validateMongodbid from "../utils/validateMongodbId";
 // creating a post
 export const createPost = async (req, res) => {
   const { userId, caption } = req.body;
@@ -22,9 +23,14 @@ export const createPost = async (req, res) => {
         hashtags.push(result.value.substring(1));
       }
     });
+    // checking mongodb id valid or not
+    await validateMongodbid(userId);
+    // get username
+    const user = await UserModel.findById(mongoose.Types.ObjectId(userId));
     // saving to DB
     const newPost = new PostModel({
       userId: mongoose.Types.ObjectId(userId),
+      username: user.username,
       caption: caption,
       hashtags,
       image: req.image.secure_url,
@@ -40,6 +46,7 @@ export const createPost = async (req, res) => {
         .json({ message: "Post Created Successfully", status: true });
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 };
