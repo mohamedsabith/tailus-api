@@ -4,7 +4,7 @@ import * as linkify from "linkifyjs";
 import "linkify-plugin-hashtag";
 import PostModel from "../models/postModel.js";
 import UserModel from "../models/userModel.js";
-import validateMongodbid from "../utils/validateMongodbId";
+import validateMongodbid from "../utils/validateMongodbId.js";
 // creating a post
 export const createPost = async (req, res) => {
   const { userId, caption } = req.body;
