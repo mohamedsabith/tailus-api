@@ -126,6 +126,7 @@ const googleSignUp = async (req, res) => {
         process.env.ACCESS_JWT_TOKEN,
         { expiresIn: "1d" }
       );
+      // token encrypting
       const encryptToken = await Encrypt(token);
 
       const userDetails = {

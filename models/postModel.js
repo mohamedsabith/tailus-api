@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import moment from "moment";
 
 const postSchema = mongoose.Schema(
   {
@@ -41,10 +40,10 @@ const postSchema = mongoose.Schema(
         ref: "User",
       },
     ],
-    createdAt: {
-      type: String,
-      default: moment(Date.now()).utcOffset("+05:30").format("lll"),
-    },
+    // createdAt: {
+    //   type: Date,
+    //   default: moment(Date.now()).utcOffset("+05:30").format("lll"),
+    // },
   },
   {
     timestamps: true,
