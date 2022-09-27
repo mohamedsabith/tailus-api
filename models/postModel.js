@@ -40,10 +40,6 @@ const postSchema = mongoose.Schema(
         ref: "User",
       },
     ],
-    // createdAt: {
-    //   type: Date,
-    //   default: moment(Date.now()).utcOffset("+05:30").format("lll"),
-    // },
   },
   {
     timestamps: true,
