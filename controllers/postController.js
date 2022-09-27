@@ -5,17 +5,20 @@ import "linkify-plugin-hashtag";
 import PostModel from "../models/postModel.js";
 import UserModel from "../models/userModel.js";
 import validateMongodbid from "../utils/validateMongodbId.js";
+
 // creating a post
 export const createPost = async (req, res) => {
   const { userId, caption } = req.body;
   try {
     if (!req.image) {
       return res
-        .status(400)
-        .send({ error: "Please provide the image to upload." });
+        .status(404)
+        .send({ status: false, error: "Please provide the image to upload." });
     }
     if (!userId) {
-      return res.status(400).send({ error: "Please provide userId." });
+      return res
+        .status(404)
+        .send({ status: false, error: "Please provide userId." });
     }
     const hashtags = [];
     linkify.find(caption).forEach((result) => {
@@ -23,14 +26,13 @@ export const createPost = async (req, res) => {
         hashtags.push(result.value.substring(1));
       }
     });
+
     // checking mongodb id valid or not
     await validateMongodbid(userId);
-    // get username
-    const user = await UserModel.findById(mongoose.Types.ObjectId(userId));
+
     // saving to DB
     const newPost = new PostModel({
       userId: mongoose.Types.ObjectId(userId),
-      username: user.username,
       caption: caption,
       hashtags,
       image: req.image.secure_url,
@@ -39,7 +41,7 @@ export const createPost = async (req, res) => {
     await newPost.save(async (err) => {
       if (err) {
         console.log(err.message);
-        return res.status(400).json({ status: false, error: err.message });
+        return res.status(404).json({ status: false, error: err.message });
       }
       return res
         .status(200)
@@ -64,6 +66,7 @@ export const getPost = async (req, res) => {
     }
     return res.status(200).json(post);
   } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 };
@@ -86,6 +89,7 @@ export const deletePost = async (req, res) => {
     }
     return res.status(403).json("Action forbidden");
   } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 };
@@ -108,6 +112,7 @@ export const likePost = async (req, res) => {
     await post.updateOne({ $push: { likes: userId } });
     return res.status(200).json("Post liked");
   } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 };
@@ -116,7 +121,9 @@ export const likePost = async (req, res) => {
 export const getTimelinePosts = async (req, res) => {
   const userId = req.params.id;
   try {
-    const currentUserPosts = await PostModel.find({ userId: userId });
+    const currentUserPosts = await PostModel.find({ userId: userId }).populate(
+      "userId"
+    );
 
     const followingPosts = await UserModel.aggregate([
       {

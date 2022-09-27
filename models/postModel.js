@@ -8,10 +8,6 @@ const postSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    username: {
-      type: String,
-      required: true,
-    },
     image: String,
     caption: String,
     hashtags: [
@@ -46,7 +42,7 @@ const postSchema = mongoose.Schema(
       },
     ],
     createdAt: {
-      type: Date,
+      type: String,
       default: moment(Date.now()).utcOffset("+05:30").format("lll"),
     },
   },

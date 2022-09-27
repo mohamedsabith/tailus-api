@@ -39,11 +39,8 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "",
-    },
-    coverPhoto: {
-      type: String,
-      default: "",
+      default:
+        "https://png.pngtree.com/png-vector/20190114/ourlarge/pngtree-vector-avatar-icon-png-image_313572.jpg",
     },
     bio: {
       type: String,
