@@ -58,7 +58,7 @@ export const getPost = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const post = await PostModel.findById(id);
+    const post = await PostModel.findById(id).populate("userId");
     if (!post) {
       return res
         .status(404)
@@ -85,9 +85,9 @@ export const deletePost = async (req, res) => {
     }
     if (post.userId === userId) {
       await post.deleteOne();
-      return res.status(200).json("Post deleted.");
+      return res.status(200).json({ status: true, message: "Post deleted." });
     }
-    return res.status(403).json("Action forbidden");
+    return res.status(403).json({ status: false, message: "Action forbidden" });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -99,18 +99,18 @@ export const likePost = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;
   try {
-    const post = await PostModel.findById(id);
+    const post = await PostModel.findById(mongoose.Types.ObjectId(id));
     if (!post) {
       return res
         .status(404)
         .json({ status: false, message: "Post Not Found." });
     }
-    if (post.likes.includes(userId)) {
+    if (post.likes.includes(mongoose.Types.ObjectId(userId))) {
       await post.updateOne({ $pull: { likes: userId } });
-      return res.status(200).json("Post disliked");
+      return res.status(200).json({ status: true, message: "Post disliked" });
     }
     await post.updateOne({ $push: { likes: userId } });
-    return res.status(200).json("Post liked");
+    return res.status(200).json({ status: true, message: "Post liked" });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -121,19 +121,19 @@ export const likePost = async (req, res) => {
 export const getTimelinePosts = async (req, res) => {
   const userId = req.params.id;
   try {
-    const currentUserPosts = await PostModel.find({ userId: userId }).populate(
-      "userId"
-    );
+    const currentUserPosts = await PostModel.find({
+      userId: mongoose.Types.ObjectId(userId),
+    }).populate("userId");
 
     const followingPosts = await UserModel.aggregate([
       {
         $match: {
-          _id: new mongoose.Types.ObjectId(userId),
+          _id: mongoose.Types.ObjectId(userId),
         },
       },
       {
         $lookup: {
-          from: "Posts",
+          from: "posts",
           localField: "following",
           foreignField: "userId",
           as: "followingPosts",
@@ -146,7 +146,7 @@ export const getTimelinePosts = async (req, res) => {
         },
       },
     ]);
-
+    console.log(followingPosts[0].followingPosts);
     return res
       .status(200)
       .json(
@@ -155,6 +155,7 @@ export const getTimelinePosts = async (req, res) => {
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       );
   } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 };

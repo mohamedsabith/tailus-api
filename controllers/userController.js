@@ -13,7 +13,7 @@ export const getUser = async (req, res) => {
 
       return res.status(200).json(otherDetails);
     }
-    return res.status(404).json("No such User");
+    return res.status(404).json({ status: false, message: "No such a user." });
   } catch (error) {
     return res.status(500).json(error);
   }

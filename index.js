@@ -51,7 +51,7 @@ app.use("/api/v1/message", MessageRoute);
 
 app.all("*", (req, res) => {
   res.status(404).json({
-    status: "false",
+    status: false,
     message: `Can't find ${req.originalUrl} on this server!`,
   });
 });
