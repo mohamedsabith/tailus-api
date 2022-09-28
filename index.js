@@ -59,6 +59,6 @@ app.all("*", (req, res) => {
 const { PORT } = process.env;
 
 app.listen(PORT, (err) => {
-  if (err) console.log(chalk.red(`Server failed to start Error : ${err}`));
+  if (err) console.log(chalk.red(`Server failed to start Error > ${err}`));
   console.log(chalk.blue(`Server Running on Port: http://localhost:${PORT}`));
 });
