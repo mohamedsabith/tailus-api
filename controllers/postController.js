@@ -58,7 +58,7 @@ export const getPost = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const post = await PostModel.findById(id).populate("userId");
+    const post = await PostModel.findById(id).lean().populate("userId");
     if (!post) {
       return res
         .status(404)
@@ -140,18 +140,29 @@ export const getTimelinePosts = async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: "User",
+          localField: "userId",
+          foreignField: "_id",
+          as: "userDetails",
+        },
+      },
+      {
         $project: {
           followingPosts: 1,
+          userDetails: 1,
           _id: 0,
         },
       },
     ]);
-    console.log(followingPosts[0].followingPosts);
     return res
       .status(200)
       .json(
         currentUserPosts
-          .concat(...followingPosts[0].followingPosts)
+          .concat(
+            ...followingPosts[0].followingPosts,
+            ...followingPosts[0].userDetails
+          )
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       );
   } catch (error) {
