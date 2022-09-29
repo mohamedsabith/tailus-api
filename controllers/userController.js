@@ -7,10 +7,7 @@ export const getUser = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await UserModel.findById(id)
-      .populate("posts")
-      .populate("following")
-      .populate("followers");
+    const user = await UserModel.findById(id).populate("posts");
     if (user) {
       const { password, ...otherDetails } = user._doc;
 
