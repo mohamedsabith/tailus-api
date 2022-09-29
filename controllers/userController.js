@@ -1,6 +1,8 @@
 /* eslint-disable import/extensions */
 import chalk from "chalk";
+import mongoose from "mongoose";
 import UserModel from "../models/userModel.js";
+import PostModel from "../models/postModel.js";
 
 // Get a User
 export const getUser = async (req, res) => {
@@ -10,8 +12,10 @@ export const getUser = async (req, res) => {
     const user = await UserModel.findById(id);
     if (user) {
       const { password, ...otherDetails } = user._doc;
-
-      return res.status(200).json(otherDetails);
+      const currentUserPosts = await PostModel.find({
+        userId: mongoose.Types.ObjectId(id),
+      });
+      return res.status(200).json({ otherDetails, currentUserPosts });
     }
     return res.status(404).json({ status: false, message: "No such a user." });
   } catch (error) {

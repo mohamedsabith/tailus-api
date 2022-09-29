@@ -140,17 +140,8 @@ export const getTimelinePosts = async (req, res) => {
         },
       },
       {
-        $lookup: {
-          from: "User",
-          localField: "userId",
-          foreignField: "_id",
-          as: "userDetails",
-        },
-      },
-      {
         $project: {
           followingPosts: 1,
-          userDetails: 1,
           _id: 0,
         },
       },
@@ -159,10 +150,7 @@ export const getTimelinePosts = async (req, res) => {
       .status(200)
       .json(
         currentUserPosts
-          .concat(
-            ...followingPosts[0].followingPosts,
-            ...followingPosts[0].userDetails
-          )
+          .concat(...followingPosts[0].followingPosts)
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       );
   } catch (error) {
