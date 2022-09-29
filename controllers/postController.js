@@ -43,7 +43,10 @@ export const createPost = async (req, res) => {
         console.log(err.message);
         return res.status(404).json({ status: false, error: err.message });
       }
-      console.log(response);
+      await UserModel.findByIdAndUpdate(
+        { _id: userId },
+        { $pull: { posts: response._id } }
+      );
       return res
         .status(200)
         .json({ message: "Post Created Successfully", status: true });
