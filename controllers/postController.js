@@ -38,15 +38,11 @@ export const createPost = async (req, res) => {
       image: req.image.secure_url,
     });
 
-    await newPost.save(async (err, response) => {
+    await newPost.save(async (err) => {
       if (err) {
         console.log(err.message);
         return res.status(404).json({ status: false, error: err.message });
       }
-      await UserModel.findByIdAndUpdate(
-        { _id: userId },
-        { $pull: { posts: response._id } }
-      );
       return res
         .status(200)
         .json({ message: "Post Created Successfully", status: true });
