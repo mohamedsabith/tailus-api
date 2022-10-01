@@ -12,7 +12,7 @@ export const getUser = async (req, res) => {
     const user = await UserModel.findById(id);
     const currentUserPosts = await PostModel.find({
       userId: mongoose.Types.ObjectId(id),
-    });
+    }).sort({ createdAt: -1 });
     if (user) {
       const { password, ...otherDetails } = user._doc;
       return res.status(200).json({ otherDetails, currentUserPosts });
