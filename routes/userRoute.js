@@ -12,5 +12,5 @@ const router = express.Router();
 router.get("/suggestion", verifyUser, getAllUsers);
 router.get("/:id", getUser);
 router.put("/follow/:id", verifyUser, followUser);
-router.get("/verifyToken", verifyUser);
+
 export default router;

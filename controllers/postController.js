@@ -75,15 +75,16 @@ export const getPost = async (req, res) => {
 export const deletePost = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;
-
   try {
     const post = await PostModel.findById(id);
+
     if (!post) {
       return res
         .status(404)
         .json({ status: false, message: "Post Not Found." });
     }
-    if (post.userId === userId) {
+
+    if (post.userId.toString() === mongoose.Types.ObjectId(userId).toString()) {
       await post.deleteOne();
       return res.status(200).json({ status: true, message: "Post deleted." });
     }
