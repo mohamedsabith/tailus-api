@@ -22,6 +22,7 @@
         "class-methods-use-this": "off",
         "no-underscore-dangle":"off",
         "consistent-return":"off",
-        "new-cap":"off"
+        "new-cap":"off",
+        "no-shadow":"off"
     }
 }

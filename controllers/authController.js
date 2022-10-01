@@ -128,19 +128,12 @@ const googleSignUp = async (req, res) => {
       );
       // token encrypting
       const encryptToken = await Encrypt(token);
-
-      const userDetails = {
-        email,
-        generatingUsername,
-        fullname,
-        password,
-      };
+      const { password, ...userDetails } = result;
       console.log(chalk.green("Register Successfully"));
       return res.status(200).json({
         status: true,
         message: "Register Successfully",
-        encryptToken,
-        id: result.id,
+        token: encryptToken,
         userDetails,
       });
     });
@@ -191,19 +184,12 @@ const otpVerification = (req, res) => {
               { expiresIn: "1d" }
             );
             const encryptToken = await Encrypt(token);
-            const userDetails = {
-              phoneNumber,
-              email,
-              username,
-              fullname,
-              password,
-            };
+            const { password, ...userDetails } = result;
             console.log(chalk.green("Register Successfully"));
             return res.status(200).json({
               status: true,
               message: "Register Successfully",
-              encryptToken,
-              id: result.id,
+              token: encryptToken,
               userDetails,
             });
           });
@@ -261,15 +247,15 @@ const signIn = async (req, res) => {
         process.env.ACCESS_JWT_TOKEN,
         { expiresIn: "1d" }
       );
+
+      const { password, ...userDetails } = user._doc;
       const encryptToken = await Encrypt(token);
       console.log(chalk.green("Login Successfully"));
       return res.status(200).json({
         status: "ok",
         msg: "Sign in Success",
-        encryptToken,
-        id: user._id,
-        name: user.name,
-        email: user.email,
+        token: encryptToken,
+        userDetails,
       });
     });
   } catch (error) {
