@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default:
-        "https://png.pngtree.com/png-vector/20190114/ourlarge/pngtree-vector-avatar-icon-png-image_313572.jpg",
+        "https://res.cloudinary.com/dpxi2tqqw/image/upload/v1664534286/posts/person_default_jsnzni.jpg",
     },
     bio: {
       type: String,

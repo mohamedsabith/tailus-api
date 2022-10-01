@@ -4,9 +4,9 @@ import { Decrypt } from "../utils/crypto.js";
 
 const verifyLogin = async (req, res, next) => {
   const token = req.header("authtoken");
-
+  console.log(token);
   if (!token) {
-    return res.status(401).json({ status: false, msg: "Access Denied" });
+    return res.status(401).json({ status: false, error: "Access Denied" });
   }
 
   try {
@@ -15,7 +15,7 @@ const verifyLogin = async (req, res, next) => {
     req.user = verify;
     next();
   } catch (error) {
-    res.status(400).json({ status: false, msg: "Invalid Token" });
+    return res.status(400).json({ status: false, error: "Token Expired" });
   }
 };
 

@@ -9,8 +9,8 @@ import verifyUser from "../middlewares/verifyUser.js";
 
 const router = express.Router();
 
-router.get("/:id", getUser);
 router.get("/", verifyUser, getAllUsers);
+router.get("/:id", getUser);
 router.put("/follow/:id", verifyUser, followUser);
-
+router.get("/verifyToken", verifyUser);
 export default router;
