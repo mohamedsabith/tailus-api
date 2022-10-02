@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default:
-        "https://res.cloudinary.com/dpxi2tqqw/image/upload/v1664534286/posts/person_default_jsnzni.jpg",
+        "https://res.cloudinary.com/dpxi2tqqw/image/upload/v1664708308/person_default_qfvfkk.jpg",
     },
     bio: {
       type: String,
@@ -51,6 +51,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       maxlength: 65,
     },
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Posts",
+      },
+    ],
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId,

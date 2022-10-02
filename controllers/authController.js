@@ -128,7 +128,7 @@ const googleSignUp = async (req, res) => {
       );
       // token encrypting
       const encryptToken = await Encrypt(token);
-      const { password, ...userDetails } = result;
+      const { password, ...userDetails } = result._doc;
       console.log(chalk.green("Register Successfully"));
       return res.status(200).json({
         status: true,
@@ -184,7 +184,7 @@ const otpVerification = (req, res) => {
               { expiresIn: "1d" }
             );
             const encryptToken = await Encrypt(token);
-            const { password, ...userDetails } = result;
+            const { password, ...userDetails } = result._doc;
             console.log(chalk.green("Register Successfully"));
             return res.status(200).json({
               status: true,
@@ -210,7 +210,6 @@ const otpVerification = (req, res) => {
 const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     // Validating Data
     const dataValidation = await signInValidation(req.body);
 
@@ -230,7 +229,6 @@ const signIn = async (req, res) => {
           "The email you entered doesn't belong to an account. Please check your email and try again.",
       });
     }
-
     // Comparing plain password to hashed password
     await bcrypt.compare(password, user.password).then(async (status) => {
       if (!status) {
@@ -240,7 +238,6 @@ const signIn = async (req, res) => {
             "Your password was incorrect. Please double-check your password.",
         });
       }
-
       // Generating JWT token
       const token = await Jwt.sign(
         { id: user._id, name: user.username, email: user.email, status: "ok" },

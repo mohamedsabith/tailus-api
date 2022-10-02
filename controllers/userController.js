@@ -1,21 +1,17 @@
 /* eslint-disable import/extensions */
 import chalk from "chalk";
-import mongoose from "mongoose";
 import UserModel from "../models/userModel.js";
-import PostModel from "../models/postModel.js";
 
 // Get a User
 export const getUser = async (req, res) => {
   const { id } = req.params;
-
   try {
-    const user = await UserModel.findById(id);
-    const currentUserPosts = await PostModel.find({
-      userId: mongoose.Types.ObjectId(id),
-    }).sort({ createdAt: -1 });
+    const user = await UserModel.findById(id)
+      .populate("posts")
+      .sort({ createdAt: -1 });
     if (user) {
-      const { password, ...otherDetails } = user._doc;
-      return res.status(200).json({ otherDetails, currentUserPosts });
+      const { password, ...userDetails } = user._doc;
+      return res.status(200).json({ userDetails });
     }
     return res.status(404).json({ status: false, message: "No such a user." });
   } catch (error) {
@@ -26,7 +22,7 @@ export const getUser = async (req, res) => {
 // Get all users
 export const getAllUsers = async (req, res) => {
   try {
-    let users = await UserModel.find();
+    let users = await UserModel.find().sort({ createdAt: -1 }).limit(7);
     users = users.map((user) => {
       const { password, ...otherDetails } = user._doc;
       return otherDetails;
