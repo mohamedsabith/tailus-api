@@ -1,5 +1,6 @@
 /* eslint-disable import/extensions */
 import chalk from "chalk";
+import mongoose from "mongoose";
 import UserModel from "../models/userModel.js";
 
 // Get a User
@@ -22,13 +23,31 @@ export const getUser = async (req, res) => {
 // Get all users
 export const getAllUsers = async (req, res) => {
   try {
-    let users = await UserModel.find().sort({ createdAt: -1 }).limit(7);
+    let users = await UserModel.find().sort({ createdAt: -1 });
     users = users.map((user) => {
       const { password, ...otherDetails } = user._doc;
       return otherDetails;
     });
     return res.status(200).json(users);
   } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+export const suggestedUsers = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const users = await UserModel.find().sort({ createdAt: -1 });
+    const suggestedUsers = users
+      .filter(
+        (u) =>
+          !u.followers.includes(mongoose.Types.ObjectId(id)) &&
+          u._id.toString() !== id.toString()
+      )
+      .slice(-5);
+    return res.status(200).json(suggestedUsers);
+  } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 };
