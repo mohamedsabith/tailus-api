@@ -124,11 +124,13 @@ const googleSignUp = async (req, res) => {
         result.username,
         result._id
       );
+      console.log(token);
       const refreshToken = await generateRefreshToken(
         result.email,
         result.username,
         result._id
       );
+      console.log(refreshToken);
       // token encrypting
       const encryptToken = await Encrypt(token);
       const { password, ...userDetails } = result._doc;
