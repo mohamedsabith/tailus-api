@@ -2,6 +2,7 @@
 import chalk from "chalk";
 import mongoose from "mongoose";
 import UserModel from "../models/userModel.js";
+import PostModel from "../models/postModel.js";
 
 // Get a User
 export const getUser = async (req, res) => {
@@ -10,9 +11,12 @@ export const getUser = async (req, res) => {
     const user = await UserModel.findById(id)
       .populate("posts")
       .sort({ createdAt: -1 });
+    const currentUserPosts = await PostModel.find({ userId: id }).sort({
+      createdAt: -1,
+    });
     if (user) {
       const { password, ...userDetails } = user._doc;
-      return res.status(200).json({ userDetails });
+      return res.status(200).json({ userDetails, currentUserPosts });
     }
     return res.status(404).json({ status: false, message: "No such a user." });
   } catch (error) {
