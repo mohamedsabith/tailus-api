@@ -124,13 +124,11 @@ const googleSignUp = async (req, res) => {
         result.username,
         result._id
       );
-      console.log(token);
       const refreshToken = await generateRefreshToken(
         result.email,
         result.username,
         result._id
       );
-      console.log(refreshToken);
       // token encrypting
       const encryptToken = await Encrypt(token);
       const { password, ...userDetails } = result._doc;
@@ -414,6 +412,37 @@ const ResetPassword = async (req, res) => {
   }
 };
 
+const handleRefreshToken = async (req, res) => {
+  try {
+    const { userId, refreshToken } = req.body;
+    if (!userId || !refreshToken) {
+      return res.status(401).json("You are not authenticated!");
+    }
+    const user = userModel.findById(userId);
+    if (!user) {
+      return res.status(401).json("User Not Found!");
+    }
+    if (user.refreshToken !== refreshToken) {
+      return res.status(403).json("Refresh token is not valid!");
+    }
+    Jwt.verify(refreshToken, process.env.REFRESH_JWT_TOKEN, async (err) => {
+      if (err) {
+        return res.status(404).json(err.message);
+      }
+      const token = generateAccessToken(user.email, user.username, user._id);
+      const encryptToken = await Encrypt(token);
+      res.status(200).json({
+        message: "New Token Created Successfully",
+        status: true,
+        token: encryptToken,
+      });
+    });
+  } catch (error) {
+    console.log(chalk.red(error));
+    return res.status(404).json(error);
+  }
+};
+
 export {
   signUp,
   otpVerification,
@@ -421,4 +450,5 @@ export {
   ForgotPassword,
   ResetPassword,
   googleSignUp,
+  handleRefreshToken,
 };

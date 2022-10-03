@@ -126,6 +126,9 @@ export const likePost = async (req, res) => {
 export const getTimelinePosts = async (req, res) => {
   const userId = req.params.id;
   try {
+    if (!userId) {
+      res.status(404).json({ status: false, error: "Please provide userId." });
+    }
     const currentUserPosts = await PostModel.find({
       userId: mongoose.Types.ObjectId(userId),
     }).populate("userId");
@@ -152,8 +155,18 @@ export const getTimelinePosts = async (req, res) => {
 export const reportPost = async (req, res) => {
   try {
     const postId = req.params.id;
-    const { userId } = req.body;
-    console.log(postId, userId);
+    if (!postId) {
+      res.status(404).json({ status: false, error: "Please provide postId." });
+    }
+    const post = await PostModel.findById({ postId });
+    if (!post) {
+      res.status(404).json({ status: false, error: "Post Not Found." });
+    }
+    await PostModel.findByIdAndUpdate(
+      { _id: postId },
+      { $inc: { reportCount: 1 } }
+    );
+    return res.status(200).json({ status: true, message: "Post reported." });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);

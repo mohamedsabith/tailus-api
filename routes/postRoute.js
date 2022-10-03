@@ -6,6 +6,7 @@ import {
   getPost,
   getTimelinePosts,
   likePost,
+  reportPost,
 } from "../controllers/postController.js";
 import cloudUpload from "../utils/cloudinary.js";
 import Upload from "../utils/multer.js";
@@ -24,5 +25,6 @@ router.get("/:id", verifyUser, getPost);
 router.delete("/:id", verifyUser, deletePost);
 router.put("/like/:id", verifyUser, likePost);
 router.get("/timeline/:id", verifyUser, getTimelinePosts);
+router.post("/reportPost/:id", verifyUser, reportPost);
 
 export default router;

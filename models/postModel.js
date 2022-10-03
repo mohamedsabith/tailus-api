@@ -34,6 +34,10 @@ const postSchema = mongoose.Schema(
         },
       },
     ],
+    reportCount: {
+      type: Number,
+      default: 0,
+    },
     savedBy: [
       {
         type: mongoose.Schema.Types.ObjectId,
