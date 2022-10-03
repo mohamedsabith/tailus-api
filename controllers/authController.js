@@ -12,6 +12,10 @@ import {
   resetPasswordValidation,
 } from "../validators/authValidator.js";
 import { Encrypt } from "../utils/crypto.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../utils/generateToken.js";
 import userModel from "../models/userModel.js";
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -115,25 +119,29 @@ const googleSignUp = async (req, res) => {
         return res.status(400).json({ status: false, error: err.message });
       }
       // Generating JWT token
-      const token = Jwt.sign(
-        {
-          email: result.email,
-          name: result.username,
-          id: result.id,
-          data: Date.now(),
-          status: "Ok",
-        },
-        process.env.ACCESS_JWT_TOKEN,
-        { expiresIn: "1d" }
+      const token = await generateAccessToken(
+        result.email,
+        result.username,
+        result._id
+      );
+      const refreshToken = await generateRefreshToken(
+        result.email,
+        result.username,
+        result._id
       );
       // token encrypting
       const encryptToken = await Encrypt(token);
       const { password, ...userDetails } = result._doc;
+      await userModel.findByIdAndUpdate(
+        { _id: result._id },
+        { $set: { refreshToken: refreshToken } }
+      );
       console.log(chalk.green("Register Successfully"));
       return res.status(200).json({
         status: true,
         message: "Register Successfully",
         token: encryptToken,
+        refreshToken,
         userDetails,
       });
     });
@@ -172,24 +180,28 @@ const otpVerification = (req, res) => {
                 .json({ status: false, error: err.message });
             }
             // Generating JWT token
-            const token = Jwt.sign(
-              {
-                email: result.email,
-                name: result.username,
-                id: result.id,
-                data: Date.now(),
-                status: "Ok",
-              },
-              process.env.ACCESS_JWT_TOKEN,
-              { expiresIn: "1d" }
+            const token = await generateAccessToken(
+              result.email,
+              result.username,
+              result._id
+            );
+            const refreshToken = await generateRefreshToken(
+              result.email,
+              result.username,
+              result._id
             );
             const encryptToken = await Encrypt(token);
             const { password, ...userDetails } = result._doc;
+            await userModel.findByIdAndUpdate(
+              { _id: result._id },
+              { $set: { refreshToken: refreshToken } }
+            );
             console.log(chalk.green("Register Successfully"));
-            return res.status(200).json({
+            return res.status(201).json({
               status: true,
               message: "Register Successfully",
               token: encryptToken,
+              refreshToken,
               userDetails,
             });
           });
@@ -238,20 +250,31 @@ const signIn = async (req, res) => {
             "Your password was incorrect. Please double-check your password.",
         });
       }
+
       // Generating JWT token
-      const token = await Jwt.sign(
-        { id: user._id, name: user.username, email: user.email, status: "ok" },
-        process.env.ACCESS_JWT_TOKEN,
-        { expiresIn: "1d" }
+      const token = await generateAccessToken(
+        user.email,
+        user.username,
+        user._id
+      );
+      const refreshToken = await generateRefreshToken(
+        user.email,
+        user.username,
+        user._id
       );
 
       const { password, ...userDetails } = user._doc;
       const encryptToken = await Encrypt(token);
+      await userModel.findByIdAndUpdate(
+        { _id: user._id },
+        { $set: { refreshToken: refreshToken } }
+      );
       console.log(chalk.green("Login Successfully"));
       return res.status(200).json({
         status: "ok",
         msg: "Sign in Success",
         token: encryptToken,
+        refreshToken,
         userDetails,
       });
     });

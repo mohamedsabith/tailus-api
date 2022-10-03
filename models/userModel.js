@@ -75,6 +75,10 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    refreshToken: {
+      type: String,
+      default: null,
+    },
     private: {
       type: Boolean,
       default: false,

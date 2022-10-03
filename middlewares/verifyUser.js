@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { Decrypt } from "../utils/crypto.js";
 
 const verifyLogin = async (req, res, next) => {
-  const token = req.header("authtoken");
+  const token = req.header("AuthToken");
 
   if (!token) {
     return res.status(401).json({ status: false, error: "Access Denied" });
