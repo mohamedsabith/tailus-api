@@ -130,33 +130,17 @@ export const getTimelinePosts = async (req, res) => {
       userId: mongoose.Types.ObjectId(userId),
     }).populate("userId");
 
-    const followingPosts = await UserModel.aggregate([
-      {
-        $match: {
-          _id: mongoose.Types.ObjectId(userId),
-        },
-      },
-      {
-        $lookup: {
-          from: "posts",
-          localField: "following",
-          foreignField: "userId",
-          as: "followingPosts",
-        },
-      },
-      {
-        $project: {
-          followingPosts: 1,
-          _id: 0,
-        },
-      },
-    ]);
+    const user = await UserModel.findById(mongoose.Types.ObjectId(userId));
+
+    const followingPosts = await PostModel.find({
+      userId: { $in: user.following },
+    }).populate("userId");
 
     return res
       .status(200)
       .json(
         currentUserPosts
-          .concat(...followingPosts[0].followingPosts)
+          .concat(followingPosts)
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       );
   } catch (error) {
