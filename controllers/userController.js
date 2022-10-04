@@ -65,7 +65,7 @@ export const followUser = async (req, res) => {
     if (!userToFollow || !loggedInUser) {
       return res.status(400).json({ status: false, message: "User not found" });
     }
-    if (userToFollow === loggedInUser) {
+    if (userToFollow.toString() === loggedInUser.toString()) {
       return res
         .status(400)
         .json({ status: false, message: "Not follow yourself" });
