@@ -2,7 +2,7 @@
 import jwt from "jsonwebtoken";
 import { Decrypt } from "../utils/crypto.js";
 
-const verifyLogin = async (req, res, next) => {
+const verifyUser = async (req, res, next) => {
   const token = req.header("AuthToken");
 
   if (!token) {
@@ -19,4 +19,4 @@ const verifyLogin = async (req, res, next) => {
   }
 };
 
-export default verifyLogin;
+export default verifyUser;
