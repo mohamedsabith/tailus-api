@@ -62,14 +62,17 @@ export const followUser = async (req, res) => {
     const userToFollow = await UserModel.findById(req.params.id);
     const loggedInUser = await UserModel.findById(req.body.userId);
 
-    if (!userToFollow) {
+    if (!userToFollow || !loggedInUser) {
       return res.status(400).json({ status: false, message: "User not found" });
     }
-
+    if (userToFollow === loggedInUser) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Not follow yourself" });
+    }
     if (loggedInUser.following.includes(userToFollow._id)) {
       const followingIndex = loggedInUser.following.indexOf(userToFollow._id);
       const followerIndex = userToFollow.followers.indexOf(loggedInUser._id);
-
       loggedInUser.following.splice(followingIndex, 1);
       userToFollow.followers.splice(followerIndex, 1);
 
