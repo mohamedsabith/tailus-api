@@ -38,6 +38,9 @@ const postSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    reportedUsers: {
+      type: Array,
+    },
     savedBy: [
       {
         type: mongoose.Schema.Types.ObjectId,

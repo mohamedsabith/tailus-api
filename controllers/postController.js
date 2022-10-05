@@ -152,16 +152,34 @@ export const getTimelinePosts = async (req, res) => {
   }
 };
 
+// report post
 export const reportPost = async (req, res) => {
   try {
     const postId = req.params.id;
+    const { userId } = req.body;
+
     if (!postId) {
       res.status(404).json({ status: false, error: "Please provide postId." });
+    }
+    if (!userId) {
+      res.status(404).json({ status: false, error: "Please provide userId." });
     }
     const post = await PostModel.findById({ postId });
     if (!post) {
       res.status(404).json({ status: false, error: "Post Not Found." });
     }
+
+    const user = await PostModel.find({
+      _id: postId,
+      reportedUsers: { $in: [userId] },
+    }).count();
+
+    if (user === 1) {
+      return res
+        .status(404)
+        .json({ status: false, error: "User already reported this post." });
+    }
+
     await PostModel.findByIdAndUpdate(
       { _id: postId },
       { $inc: { reportCount: 1 } }
