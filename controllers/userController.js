@@ -98,3 +98,23 @@ export const followUser = async (req, res) => {
     return res.status(404).json(error);
   }
 };
+
+export const userDetails = async (req, res) => {
+  try {
+    const { userIds } = req.body;
+    const details = [];
+    if (!userIds || userIds.length === 0 || Array.isArray(userIds) === false) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Please provide userIds." });
+    }
+    userIds.forEach(async (data) => {
+      const user = await UserModel.findById(data);
+      details.push(user);
+      return res.status(200).json(details);
+    });
+  } catch (error) {
+    console.log(chalk.red(error));
+    return res.status(404).json(error);
+  }
+};
