@@ -113,7 +113,7 @@ export const userDetails = async (req, res) => {
       console.log(data);
       const user = await UserModel.findById(mongoose.Types.ObjectId(data));
       details.push(user);
-      return res.status(200).json(details);
+      res.status(200).json(details);
     });
   } catch (error) {
     console.log(chalk.red(error));
