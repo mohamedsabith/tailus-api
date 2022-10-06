@@ -109,7 +109,7 @@ export const userDetails = async (req, res) => {
         .json({ status: false, message: "Please provide userIds." });
     }
     userIds.forEach(async (data) => {
-      const user = await UserModel.findById(data);
+      const user = await UserModel.findById(mongoose.Types.ObjectId(data));
       details.push(user);
       return res.status(200).json(details);
     });
