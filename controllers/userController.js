@@ -102,6 +102,7 @@ export const followUser = async (req, res) => {
 export const userDetails = async (req, res) => {
   try {
     const { userIds } = req.body;
+    console.log(userIds);
     const details = [];
     if (!userIds || userIds.length === 0 || Array.isArray(userIds) === false) {
       return res
@@ -109,6 +110,7 @@ export const userDetails = async (req, res) => {
         .json({ status: false, message: "Please provide userIds." });
     }
     userIds.forEach(async (data) => {
+      console.log(data);
       const user = await UserModel.findById(mongoose.Types.ObjectId(data));
       details.push(user);
       return res.status(200).json(details);
