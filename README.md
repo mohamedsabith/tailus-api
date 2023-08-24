@@ -1,3 +1,3 @@
 # tailus-api
 
-social media application 
+social media api
